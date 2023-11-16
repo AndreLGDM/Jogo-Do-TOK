@@ -71,6 +71,734 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    private Localizacao verificarQualJpanel(JLabel label, java.awt.event.MouseEvent evt) {
+        label = (JLabel) evt.getSource();
+
+        int coordenadaI = -1;
+        int coordenadaJ = -1;
+
+        // Procurar as coordenadas [i][j] do JPanel no array cells
+        outerLoop: for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[i].length; j++) {
+                if (cells[i][j].isAncestorOf(label)) {
+                    coordenadaI = i;
+                    coordenadaJ = j;
+                    break outerLoop; // Usar um rótulo para sair dos dois loops
+                }
+            }
+        }
+        return new Localizacao(coordenadaI, coordenadaJ);
+    }
+
+    private void movimentarPecasJogador1(JLabel label, java.awt.event.MouseEvent evt) {
+        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
+                .verificarAdjacentesLivres(verificarQualJpanel(label, evt));
+        Localizacao localizacaoAtual = (Localizacao) verificarQualJpanel(label, evt);
+
+        int index = (int) Integer.parseInt(label.getName());
+
+        for (Localizacao adjacente : adjacentesLivres) {
+            int linhaAdjacente = adjacente.getLinha();
+            int colunaAdjacente = adjacente.getColuna();
+
+            if (linhaAdjacente > localizacaoAtual.getLinha()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+
+                novoBotao.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarVezJogador()) {
+                            if (estado.verificarTokMovido()) {
+                                jogador1.getPeca(index).moverParaBaixo();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador1.getPeca(index).getLocalizacao()
+                                        .getLinha()][jogador1.getPeca(index)
+                                                .getLocalizacao()
+                                                .getColuna()]
+                                        .add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.salvarLocalizacaoTok(pecaTok);
+                                estado.incrementarRodada();
+                            } else {
+                                JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+
+                });
+            }
+
+            if (colunaAdjacente > localizacaoAtual.getColuna()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarVezJogador()) {
+                            if (estado.verificarTokMovido()) {
+                                jogador1.getPeca(index).moverParaDireita();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador1.getPeca(index).getLocalizacao()
+                                        .getLinha()][jogador1.getPeca(index)
+                                                .getLocalizacao()
+                                                .getColuna()]
+                                        .add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.salvarLocalizacaoTok(pecaTok);
+                                estado.incrementarRodada();
+                            } else {
+                                JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (linhaAdjacente < localizacaoAtual.getLinha()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarVezJogador()) {
+                            if (estado.verificarTokMovido()) {
+                                jogador1.getPeca(index).moverParaBaixo();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador1.getPeca(index).getLocalizacao()
+                                        .getLinha()][jogador1.getPeca(index)
+                                                .getLocalizacao()
+                                                .getColuna()]
+                                        .add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.salvarLocalizacaoTok(pecaTok);
+                                estado.incrementarRodada();
+                            } else {
+                                JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (colunaAdjacente < localizacaoAtual.getColuna()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(
+                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarVezJogador()) {
+                            if (estado.verificarTokMovido()) {
+                                jogador1.getPeca(index).moverParaEsquerda();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador1.getPeca(index).getLocalizacao()
+                                        .getLinha()][jogador1.getPeca(index)
+                                                .getLocalizacao()
+                                                .getColuna()]
+                                        .add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.salvarLocalizacaoTok(pecaTok);
+                                estado.incrementarRodada();
+                            } else {
+                                JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+        }
+        tabuleiro.revalidate();
+        tabuleiro.repaint();
+    }
+
+    private void movimentarPecasJogador2(JLabel label, java.awt.event.MouseEvent evt) {
+        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
+                .verificarAdjacentesLivres(verificarQualJpanel(label, evt));
+        Localizacao localizacaoAtual = (Localizacao) verificarQualJpanel(label, evt);
+
+        int index = (int) Integer.parseInt(label.getName());
+
+        for (Localizacao adjacente : adjacentesLivres) {
+            int linhaAdjacente = adjacente.getLinha();
+            int colunaAdjacente = adjacente.getColuna();
+
+            if (linhaAdjacente > localizacaoAtual.getLinha()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (estado.verificarVezJogador()) {
+                            if (estado.verificarPrimeiraRodada()) {
+                                jogador2.getPeca(index).moverParaBaixo();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                        .getLocalizacao()
+                                        .getColuna()].add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.incrementarRodada();
+                            } else {
+                                if (estado.verificarTokMovido()) {
+                                    jogador2.getPeca(index).moverParaBaixo();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    estado.incrementarRodada();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (colunaAdjacente > localizacaoAtual.getColuna()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (estado.verificarVezJogador()) {
+                            if (estado.verificarPrimeiraRodada()) {
+                                jogador2.getPeca(index).moverParaDireita();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                        .getLocalizacao()
+                                        .getColuna()].add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.incrementarRodada();
+                            } else {
+                                if (estado.verificarTokMovido()) {
+                                    jogador2.getPeca(index).moverParaDireita();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    estado.incrementarRodada();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (linhaAdjacente < localizacaoAtual.getLinha()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+
+                        if (estado.verificarVezJogador()) {
+                            if (estado.verificarPrimeiraRodada()) {
+                                jogador2.getPeca(index).moverParaCima();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                        .getLocalizacao()
+                                        .getColuna()].add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.incrementarRodada();
+                            } else {
+                                if (estado.verificarTokMovido()) {
+                                    jogador2.getPeca(index).moverParaCima();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    estado.incrementarRodada();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (colunaAdjacente < localizacaoAtual.getColuna()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(
+                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (estado.verificarVezJogador()) {
+                            if (estado.verificarPrimeiraRodada()) {
+                                jogador2.getPeca(index).moverParaEsquerda();
+                                cells[valorI][valorJ].remove(label);
+                                cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                        .getLocalizacao()
+                                        .getColuna()].add(label);
+                                removerTodosBotoes();
+                                tabuleiro.revalidate();
+                                tabuleiro.repaint();
+                                estado.incrementarRodada();
+                            } else {
+                                if (estado.verificarTokMovido()) {
+                                    jogador2.getPeca(index).moverParaEsquerda();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                    estado.incrementarRodada();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+        }
+        tabuleiro.revalidate();
+        tabuleiro.repaint();
+    }
+
+    private void movimentarPecaTOk(JLabel label, java.awt.event.MouseEvent evt) {
+
+        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
+                .verificarAdjacentesLivres(verificarQualJpanel(label, evt));
+        Localizacao localizacaoAtual = (Localizacao) verificarQualJpanel(label, evt);
+
+        for (Localizacao adjacente : adjacentesLivres) {
+            int linhaAdjacente = adjacente.getLinha();
+            int colunaAdjacente = adjacente.getColuna();
+
+            if (linhaAdjacente > localizacaoAtual.getLinha()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarPrimeiraRodada()) {
+                            if (!estado.verificarVezJogador()) {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador1.getTok().moverParaBaixo();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador2.getTok().moverParaBaixo();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
+                                    "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (colunaAdjacente > localizacaoAtual.getColuna()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarPrimeiraRodada()) {
+                            if (!estado.verificarVezJogador()) {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador1.getTok().moverParaDireita();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador2.getTok().moverParaDireita();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
+                                    "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+            if (linhaAdjacente < localizacaoAtual.getLinha()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarPrimeiraRodada()) {
+                            if (!estado.verificarVezJogador()) {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador1.getTok().moverParaCima();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador2.getTok().moverParaCima();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
+                                    "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+
+            if (colunaAdjacente < localizacaoAtual.getColuna()) {
+                JButton novoBotao = new JButton("Novo Botão");
+
+                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
+
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
+
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
+                novoBotao.setIcon(
+                        new javax.swing.ImageIcon(
+                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
+                final int valorI = localizacaoAtual.getLinha();
+                final int valorJ = localizacaoAtual.getColuna();
+                novoBotao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        if (!estado.verificarPrimeiraRodada()) {
+                            if (!estado.verificarVezJogador()) {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador1.getTok().moverParaEsquerda();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                if (estado.verificarRodada()) {
+                                    estado.salvarLocalizacaoTok(pecaTok);
+                                    jogador2.getTok().moverParaEsquerda();
+                                    cells[valorI][valorJ].remove(label);
+                                    cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
+                                            .getLocalizacao()
+                                            .getColuna()].add(label);
+                                    removerTodosBotoes();
+                                    estado.salvarRodada();
+                                    tabuleiro.revalidate();
+                                    tabuleiro.repaint();
+                                } else {
+                                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                                            "Informação",
+                                            JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
+                                    "Informação",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+        }
+        tabuleiro.revalidate();
+        tabuleiro.repaint();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -83,20 +811,26 @@ public class JogoTokGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">
     private void initComponents() {
 
         tabuleiro = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel1.setName("0");
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel2.setName("1");
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel3.setName("2");
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel4.setName("3");
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel5.setName("4");
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
@@ -115,14 +849,19 @@ public class JogoTokGui extends javax.swing.JFrame {
         jPanel12 = new javax.swing.JPanel();
         jPanel22 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel7.setName("0");
         jPanel23 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
+        jLabel8.setName("1");
         jPanel24 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel9.setName("2");
         jPanel25 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
+        jLabel10.setName("3");
         jPanel26 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel11.setName("4");
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -725,7 +1464,7 @@ public class JogoTokGui extends javax.swing.JFrame {
                                 .addContainerGap(36, Short.MAX_VALUE)));
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem2ActionPerformed
         System.exit(0);
@@ -743,1710 +1482,57 @@ public class JogoTokGui extends javax.swing.JFrame {
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel1MouseClicked
         removerTodosBotoes();
-
-        jLabel1 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        // Procurar as coordenadas [i][j] do JPanel no array cells
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel1)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop; // Usar um rótulo para sair dos dois loops
-                }
-            }
-        }
-
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-
-                        if (!estado.verificarVezJogador()) {
-                            if (estado.verificarTokMovido()) {
-                                jogador1.getPeca(0).moverParaBaixo();
-                                cells[valorI][valorJ].remove(jLabel1);
-                                cells[jogador1.getPeca(0).getLocalizacao().getLinha()][jogador1.getPeca(0)
-                                        .getLocalizacao()
-                                        .getColuna()].add(jLabel1);
-                                removerTodosBotoes();
-                                tabuleiro.revalidate();
-                                tabuleiro.repaint();
-                                estado.salvarLocalizacaoTok(pecaTok);
-                                estado.incrementarRodada();
-                            }
-                        }
-                    }
-
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(0).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel1);
-                        cells[jogador1.getPeca(0).getLocalizacao().getLinha()][jogador1.getPeca(0).getLocalizacao()
-                                .getColuna()].add(jLabel1);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(0).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel1);
-                        cells[jogador1.getPeca(0).getLocalizacao().getLinha()][jogador1.getPeca(0).getLocalizacao()
-                                .getColuna()].add(jLabel1);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(0).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel1);
-                        cells[jogador1.getPeca(0).getLocalizacao().getLinha()][jogador1.getPeca(0).getLocalizacao()
-                                .getColuna()].add(jLabel1);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador1(jLabel1, evt);
     }// GEN-LAST:event_jLabel1MouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel2MouseClicked
         removerTodosBotoes();
-
-        jLabel2 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel2)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-
-                        jogador1.getPeca(1).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel2);
-                        cells[jogador1.getPeca(1).getLocalizacao().getLinha()][jogador1.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel2);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-
-                    }
-
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(1).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel2);
-                        cells[jogador1.getPeca(1).getLocalizacao().getLinha()][jogador1.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel2);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(1).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel2);
-                        cells[jogador1.getPeca(1).getLocalizacao().getLinha()][jogador1.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel2);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(1).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel2);
-                        cells[jogador1.getPeca(1).getLocalizacao().getLinha()][jogador1.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel2);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador1(jLabel2, evt);
     }// GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel3MouseClicked
         removerTodosBotoes();
-
-        jLabel3 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        // Procurar as coordenadas [i][j] do JPanel no array cells
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel3)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop; // Usar um rótulo para sair dos dois loops
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(2).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel3);
-                        cells[jogador1.getPeca(2).getLocalizacao().getLinha()][jogador1.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel3);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(2).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel3);
-                        cells[jogador1.getPeca(2).getLocalizacao().getLinha()][jogador1.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel3);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(2).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel3);
-                        cells[jogador1.getPeca(2).getLocalizacao().getLinha()][jogador1.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel3);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(2).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel3);
-                        cells[jogador1.getPeca(2).getLocalizacao().getLinha()][jogador1.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel3);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador1(jLabel3, evt);
     }// GEN-LAST:event_jLabel3MouseClicked
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel4MouseClicked
         removerTodosBotoes();
-
-        jLabel4 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel4)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(3).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel4);
-                        cells[jogador1.getPeca(3).getLocalizacao().getLinha()][jogador1.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel4);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(3).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel4);
-                        cells[jogador1.getPeca(3).getLocalizacao().getLinha()][jogador1.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel4);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(3).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel4);
-                        cells[jogador1.getPeca(3).getLocalizacao().getLinha()][jogador1.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel4);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(3).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel4);
-                        cells[jogador1.getPeca(3).getLocalizacao().getLinha()][jogador1.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel4);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador1(jLabel4, evt);
     }// GEN-LAST:event_jLabel4MouseClicked
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel5MouseClicked
         removerTodosBotoes();
-
-        jLabel5 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel5)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(4).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel5);
-                        cells[jogador1.getPeca(4).getLocalizacao().getLinha()][jogador1.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel5);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(4).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel5);
-                        cells[jogador1.getPeca(4).getLocalizacao().getLinha()][jogador1.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel5);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(4).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel5);
-                        cells[jogador1.getPeca(4).getLocalizacao().getLinha()][jogador1.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel5);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaI;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador1.getPeca(4).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel5);
-                        cells[jogador1.getPeca(4).getLocalizacao().getLinha()][jogador1.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel5);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador1(jLabel5, evt);
     }// GEN-LAST:event_jLabel5MouseClicked
 
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel6MouseClicked
         removerTodosBotoes();
-        jLabel6 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel6)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        if (!estado.verificarPrimeiraRodada()) {
-                            if (!estado.verificarVezJogador()) {
-                                estado.salvarLocalizacaoTok(pecaTok);
-                                jogador1.getTok().moverParaBaixo();
-                                cells[valorI][valorJ].remove(jLabel6);
-                                cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok().getLocalizacao()
-                                        .getColuna()].add(jLabel6);
-                                removerTodosBotoes();
-                                tabuleiro.revalidate();
-                                tabuleiro.repaint();
-                            } else {
-                                estado.salvarLocalizacaoTok(pecaTok);
-                                jogador2.getTok().moverParaBaixo();
-                                cells[valorI][valorJ].remove(jLabel6);
-                                cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok().getLocalizacao()
-                                        .getColuna()].add(jLabel6);
-                                removerTodosBotoes();
-                                tabuleiro.revalidate();
-                                tabuleiro.repaint();
-                            }
-                        }
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                tabuleiro.revalidate();
-                tabuleiro.repaint();
-            }
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                tabuleiro.revalidate();
-                tabuleiro.repaint();
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                tabuleiro.revalidate();
-                tabuleiro.repaint();
-            }
-        }
-
+        movimentarPecaTOk(jLabel6, evt);
     }// GEN-LAST:event_jLabel6MouseClicked
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel7MouseClicked
         removerTodosBotoes();
-
-        jLabel7 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel7)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(0).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel7);
-                        cells[jogador2.getPeca(0).getLocalizacao().getLinha()][jogador2.getPeca(0).getLocalizacao()
-                                .getColuna()].add(jLabel7);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(0).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel7);
-                        cells[jogador2.getPeca(0).getLocalizacao().getLinha()][jogador2.getPeca(0).getLocalizacao()
-                                .getColuna()].add(jLabel7);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-
-                        if (estado.verificarVezJogador()) {
-                            if (estado.verificarPrimeiraRodada()) {
-                                jogador2.getPeca(0).moverParaCima();
-                                cells[valorI][valorJ].remove(jLabel7);
-                                cells[jogador2.getPeca(0).getLocalizacao().getLinha()][jogador2.getPeca(0)
-                                        .getLocalizacao()
-                                        .getColuna()].add(jLabel7);
-                                removerTodosBotoes();
-                                tabuleiro.revalidate();
-                                tabuleiro.repaint();
-                                estado.incrementarRodada();
-                            } else {
-                                if (estado.verificarTokMovido()) {
-                                    jogador2.getPeca(0).moverParaCima();
-                                    cells[valorI][valorJ].remove(jLabel7);
-                                    cells[jogador2.getPeca(0).getLocalizacao().getLinha()][jogador2.getPeca(0)
-                                            .getLocalizacao()
-                                            .getColuna()].add(jLabel7);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.incrementarRodada();
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(0).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel7);
-                        cells[jogador2.getPeca(0).getLocalizacao().getLinha()][jogador2.getPeca(0).getLocalizacao()
-                                .getColuna()].add(jLabel7);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador2(jLabel7, evt);
     }// GEN-LAST:event_jLabel7MouseClicked
 
     private void jLabel8MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel8MouseClicked
         removerTodosBotoes();
-
-        jLabel8 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel8)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(1).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel8);
-                        cells[jogador2.getPeca(1).getLocalizacao().getLinha()][jogador2.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel8);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(1).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel8);
-                        cells[jogador2.getPeca(1).getLocalizacao().getLinha()][jogador2.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel8);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(1).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel8);
-                        cells[jogador2.getPeca(1).getLocalizacao().getLinha()][jogador2.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel8);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(1).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel8);
-                        cells[jogador2.getPeca(1).getLocalizacao().getLinha()][jogador2.getPeca(1).getLocalizacao()
-                                .getColuna()].add(jLabel8);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador2(jLabel8, evt);
     }// GEN-LAST:event_jLabel8MouseClicked
 
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel9MouseClicked
         removerTodosBotoes();
-
-        jLabel9 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel9)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(2).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel9);
-                        cells[jogador2.getPeca(2).getLocalizacao().getLinha()][jogador2.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel9);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(2).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel9);
-                        cells[jogador2.getPeca(2).getLocalizacao().getLinha()][jogador2.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel9);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(2).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel9);
-                        cells[jogador2.getPeca(2).getLocalizacao().getLinha()][jogador2.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel9);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(2).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel9);
-                        cells[jogador2.getPeca(2).getLocalizacao().getLinha()][jogador2.getPeca(2).getLocalizacao()
-                                .getColuna()].add(jLabel9);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador2(jLabel9, evt);
     }// GEN-LAST:event_jLabel9MouseClicked
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel10MouseClicked
         removerTodosBotoes();
-
-        jLabel10 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel10)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(3).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel10);
-                        cells[jogador2.getPeca(3).getLocalizacao().getLinha()][jogador2.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel10);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(3).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel10);
-                        cells[jogador2.getPeca(3).getLocalizacao().getLinha()][jogador2.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel10);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(3).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel10);
-                        cells[jogador2.getPeca(3).getLocalizacao().getLinha()][jogador2.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel10);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(3).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel10);
-                        cells[jogador2.getPeca(3).getLocalizacao().getLinha()][jogador2.getPeca(3).getLocalizacao()
-                                .getColuna()].add(jLabel10);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
-        tabuleiro.revalidate();
-        tabuleiro.repaint();
+        movimentarPecasJogador2(jLabel10, evt);
     }// GEN-LAST:event_jLabel10MouseClicked
 
     private void jLabel11MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel11MouseClicked
         removerTodosBotoes();
-
-        jLabel11 = (JLabel) evt.getSource();
-
-        int coordenadaI = -1;
-        int coordenadaJ = -1;
-
-        outerLoop: for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
-                if (cells[i][j].isAncestorOf(jLabel11)) {
-                    coordenadaI = i;
-                    coordenadaJ = j;
-                    break outerLoop;
-                }
-            }
-        }
-        Localizacao localizacaoAtual = new Localizacao(coordenadaI, coordenadaJ);
-        LinkedList<Localizacao> adjacentesLivres = tabuleiroObject.verificarAdjacentesLivres(localizacaoAtual);
-
-        for (Localizacao adjacente : adjacentesLivres) {
-            int linhaAdjacente = adjacente.getLinha();
-            int colunaAdjacente = adjacente.getColuna();
-
-            if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(4).moverParaBaixo();
-                        cells[valorI][valorJ].remove(jLabel11);
-                        cells[jogador2.getPeca(4).getLocalizacao().getLinha()][jogador2.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel11);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(4).moverParaDireita();
-                        cells[valorI][valorJ].remove(jLabel11);
-                        cells[jogador2.getPeca(4).getLocalizacao().getLinha()][jogador2.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel11);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(4).moverParaCima();
-                        cells[valorI][valorJ].remove(jLabel11);
-                        cells[jogador2.getPeca(4).getLocalizacao().getLinha()][jogador2.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel11);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-                });
-            }
-
-            if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                JButton novoBotao = new JButton("Novo Botão");
-
-                cells[linhaAdjacente][colunaAdjacente].setLayout(new FlowLayout());
-
-                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
-
-                novoBotao.setIcon(
-                        new javax.swing.ImageIcon(
-                                getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                final int valorI = coordenadaI;
-                final int valorJ = coordenadaJ;
-
-                novoBotao.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        jogador2.getPeca(4).moverParaEsquerda();
-                        cells[valorI][valorJ].remove(jLabel11);
-                        cells[jogador2.getPeca(4).getLocalizacao().getLinha()][jogador2.getPeca(4).getLocalizacao()
-                                .getColuna()].add(jLabel11);
-                        removerTodosBotoes();
-                        tabuleiro.revalidate();
-                        tabuleiro.repaint();
-                    }
-
-                });
-            }
-        }
+        movimentarPecasJogador2(jLabel11, evt);
     }// GEN-LAST:event_jLabel11MouseClicked
 
     /**
@@ -2496,7 +1582,7 @@ public class JogoTokGui extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2540,5 +1626,5 @@ public class JogoTokGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel tabuleiro;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 }
