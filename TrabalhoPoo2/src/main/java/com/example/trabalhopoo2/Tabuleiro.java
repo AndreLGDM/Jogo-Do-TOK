@@ -24,8 +24,7 @@ public class Tabuleiro extends JPanel {
     }
 
     /**
-     * Remove o objeto da localização especificada no tabuleiro, deixando a
-     * posição vazia.
+     * Remove o objeto da localização especificada no tabuleiro.
      *
      * Este método permite que você remova o objeto da localização especificada
      * no tabuleiro, tornando a posição vazia (ou seja, definindo-a como nula).
@@ -71,6 +70,8 @@ public class Tabuleiro extends JPanel {
     }
 
     /**
+     * Verifica a disponibilidade da localização a direita da fornercida.
+     * 
      * Verifica se a localização à direita da localização fornecida no tabuleiro
      * está livre. Ele verifica se a coluna à direita da localização fornecida
      * não ultrapassa os limites do tabuleiro e se essa posição está vazia (ou
@@ -93,6 +94,8 @@ public class Tabuleiro extends JPanel {
     }
 
     /**
+     * Verifica a disponibilidade da localização a esquerda da fornercida.
+     * 
      * Verifica se a localização à esquerda da localização fornecida no
      * tabuleiro está livre. Ele verifica se a coluna à esquerda da localização
      * fornecida não ultrapassa os limites do tabuleiro e se essa posição está
@@ -115,6 +118,8 @@ public class Tabuleiro extends JPanel {
     }
 
     /**
+     * Verifica a disponibilidade da localização abaixo da fornercida.
+     * 
      * Verifica se a localização abaixo da localização fornecida no tabuleiro
      * está livre. Ele verifica se a linha inferior à localização fornecida não
      * ultrapassa os limites do tabuleiro e se essa posição está vazia (ou seja,
@@ -137,6 +142,8 @@ public class Tabuleiro extends JPanel {
     }
 
     /**
+     * Verifica a disponibilidade da localização acima da fornercida.
+     * 
      * Verifica se a localização acima da localização fornecida no tabuleiro
      * está livre. Ele verifica se a linha superior à localização fornecida não
      * ultrapassa os limites do tabuleiro e se essa posição está vazia (ou seja,
@@ -158,6 +165,20 @@ public class Tabuleiro extends JPanel {
         return false;
     }
 
+    /**
+     * Verifica se as posições ao lado da localização fornecida estão livres.
+     * 
+     * Verifica se as localizações ao redor da localização fornecida estão livres,
+     * desconsiderando as posições diagonais. Ele verifica se a linha superior,
+     * linha inferior, coluna a direita, coluna a esquerda não ultrapassam os
+     * limites do tabuleiro e se essa posição está vazia (ou seja, não contém um
+     * elemento não nulo).
+     * 
+     * @param localizacao localização de referência a partir da qual se deseja
+     *                    verificar as posições adjacentes
+     * @return LinkedList com a lista de localizações adjacentes vazias
+     *         identificadas ou lista vazia caso não seja encontrada nenhuma.
+     */
     public LinkedList<Localizacao> verificarAdjacentesLivres(Localizacao localizacao) {
         LinkedList<Localizacao> localizacoes = new LinkedList<Localizacao>();
         if (localizacao.getLinha() + 1 < altura
