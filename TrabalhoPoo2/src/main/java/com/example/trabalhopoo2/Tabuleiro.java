@@ -5,7 +5,6 @@
 package com.example.trabalhopoo2;
 
 import java.util.LinkedList;
-import java.util.List;
 import javax.swing.JPanel;
 
 /**

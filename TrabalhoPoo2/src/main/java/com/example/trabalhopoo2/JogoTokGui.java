@@ -4,7 +4,6 @@
  */
 package com.example.trabalhopoo2;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -33,7 +32,7 @@ public class JogoTokGui extends javax.swing.JFrame {
     private Tok pecaTok = new Tok(tabuleiroObject);
     private Jogador jogador1 = new Jogador("Jogador1", tabuleiroObject, pecaTok);
     private Jogador jogador2 = new Jogador("Jogador2", tabuleiroObject, pecaTok);
-    private EstadoJogo estado = new EstadoJogo(jogador1, jogador2);
+    private EstadoJogo estado = new EstadoJogo(pecaTok);
     private JPanel[][] cells;
 
     /**
@@ -229,7 +228,7 @@ public class JogoTokGui extends javax.swing.JFrame {
      *
      * @param adjacentesLivres Lista de posições adjacentes livres ao redor do Tok.
      */
-    private void alertaTokPreso(LinkedList adjacentesLivres) {
+    private void alertaTokPreso(LinkedList<Localizacao> adjacentesLivres) {
         if (adjacentesLivres.size() <= 0 && estado.verificarVezJogador()) {
             JOptionPane.showMessageDialog(tabuleiro, "TOK PRESO, JOGADOR 1 VENCEU O JOGO!!", "FIM DE JOGO",
                     JOptionPane.WARNING_MESSAGE);
@@ -266,17 +265,16 @@ public class JogoTokGui extends javax.swing.JFrame {
             for (Localizacao adjacente : adjacentesLivres) {
                 int linhaAdjacente = adjacente.getLinha();
                 int colunaAdjacente = adjacente.getColuna();
+                JButton novoBotao = new JButton("Novo Botão");
+                novoBotao.setText(null);
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -316,15 +314,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -362,15 +353,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -408,15 +392,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -482,16 +459,16 @@ public class JogoTokGui extends javax.swing.JFrame {
                 int linhaAdjacente = adjacente.getLinha();
                 int colunaAdjacente = adjacente.getColuna();
 
+                JButton novoBotao = new JButton("Novo Botão");
+                novoBotao.setText(null);
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -539,15 +516,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -596,15 +566,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -653,15 +616,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -738,16 +694,16 @@ public class JogoTokGui extends javax.swing.JFrame {
                 int linhaAdjacente = adjacente.getLinha();
                 int colunaAdjacente = adjacente.getColuna();
 
+                JButton novoBotao = new JButton("Novo Botão");
+                novoBotao.setText(null);
+                novoBotao.setPreferredSize(new Dimension(50, 50));
+                novoBotao.setOpaque(false);
+                novoBotao.setContentAreaFilled(false);
+                novoBotao.setBorderPainted(false);
+
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -805,15 +761,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -868,15 +817,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(
@@ -934,15 +876,8 @@ public class JogoTokGui extends javax.swing.JFrame {
                 }
 
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                    JButton novoBotao = new JButton("Novo Botão");
 
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setText(null);
-                    novoBotao.setPreferredSize(new Dimension(50, 50));
-                    novoBotao.setOpaque(false);
-                    novoBotao.setContentAreaFilled(false);
-                    novoBotao.setBorderPainted(false);
 
                     novoBotao.setIcon(
                             new javax.swing.ImageIcon(

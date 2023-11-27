@@ -56,6 +56,7 @@ public class Localizacao {
                 coluna = in.nextInt();
             } while (coluna > 5);
         }
+        in.close();
     }
 
     public int getLinha() {

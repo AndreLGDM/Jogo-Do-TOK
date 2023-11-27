@@ -7,16 +7,14 @@ package com.example.trabalhopoo2;
  */
 public class EstadoJogo {
 
-    private Jogador jogador;
-    private Jogador jogador2;
     private Localizacao localizacaoAnteriorTok;
     private int rodadaSalva = 0;
     private int rodada = 0;
+    private Tok tok;
 
-    public EstadoJogo(Jogador jogador, Jogador jogador2) {
-        this.jogador = jogador;
-        this.jogador2 = jogador2;
-        localizacaoAnteriorTok = jogador.getTok().getLocalizacao();
+    public EstadoJogo(Tok tok) {
+        this.tok = tok;
+        localizacaoAnteriorTok = tok.getLocalizacao();
     }
 
     /**
@@ -49,7 +47,7 @@ public class EstadoJogo {
      *         e false caso a localização anterior seja igual a localização atual.
      */
     public boolean verificarTokMovido() {
-        return !localizacaoAnteriorTok.equals(jogador.getTok().getLocalizacao());
+        return !localizacaoAnteriorTok.equals(tok.getLocalizacao());
     }
 
     /**
