@@ -1680,7 +1680,7 @@ public class JogoTokGui extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem3ActionPerformed
         JOptionPane.showMessageDialog(tabuleiro, imagemAutores(), "Autores",
-                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.UNDEFINED_CONDITION);
     }// GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel1MouseClicked
