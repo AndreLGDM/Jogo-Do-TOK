@@ -243,28 +243,218 @@ public class JogoTokGui extends javax.swing.JFrame {
     }
 
     /**
-     * Movimenta as peças do Jogador 1 com base no JPanel correspondente ao JLabel.
+     * Move uma peça na direção especificada.
      *
-     * Este método permite ao Jogador 1 mover suas peças na direção desejada, com
-     * base na posição do JLabel no JPanel. Verifica se o jogo já foi finalizado, se
-     * o Tok foi movido, e se é a vez do Jogador 1 jogar antes de realizar o
-     * movimento. Exibe alertas apropriados e atualiza a interface gráfica conforme
-     * necessário.
-     *
-     * @param label O JLabel correspondente à peça do Jogador 1 a ser movimentada.
-     * @param evt   O evento do mouse associado ao movimento.
+     * @param direcao A direção para a qual a peça será movida. Pode ser "Baixo",
+     *                "Cima", "Direita" ou "Esquerda".
+     * @param index   O índice da peça a ser movida dentro da lista de peças do
+     *                jogador.
      */
-    private void movimentarPecasJogador1(JLabel label, java.awt.event.MouseEvent evt) {
+    private void dizerQualMovimentoPeca(String direcao, int index) {
+        Peca peca = (!estado.verificarVezJogador()) ? jogador1.getPeca(index) : jogador2.getPeca(index);
+
+        switch (direcao) {
+            case "Baixo":
+                peca.moverParaBaixo();
+                break;
+            case "Cima":
+                peca.moverParaCima();
+                break;
+            case "Direita":
+                peca.moverParaDireita();
+                break;
+            case "Esquerda":
+                peca.moverParaEsquerda();
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Move o TOK (peça especial) na direção especificada.
+     *
+     * @param direcao A direção para a qual o TOK será movido. Pode ser "Baixo",
+     *                "Cima", "Direita" ou "Esquerda".
+     */
+    private void dizerQualMovimentoTok(String direcao) {
+        Tok tok = (!estado.verificarVezJogador()) ? jogador1.getTok() : jogador2.getTok();
+
+        switch (direcao) {
+            case "Baixo":
+                tok.moverParaBaixo();
+                break;
+            case "Cima":
+                tok.moverParaCima();
+                break;
+            case "Direita":
+                tok.moverParaDireita();
+                break;
+            case "Esquerda":
+                tok.moverParaEsquerda();
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Move uma peça do jogador 1 no tabuleiro de acordo com as regras do jogo.
+     *
+     * @param valorI  A linha atual da peça a ser movida.
+     * @param valorJ  A coluna atual da peça a ser movida.
+     * @param index   O índice da peça a ser movida dentro da lista de peças do
+     *                jogador 1.
+     * @param label   O rótulo (JLabel) associado à peça a ser movida.
+     * @param direcao A direção para a qual a peça será movida.
+     */
+
+    private void actionPecaJogador1(final int valorI, final int valorJ, int index, JLabel label, String direcao) {
+        if (!estado.verificarVezJogador()) {
+            if (estado.verificarTokMovido()) {
+                dizerQualMovimentoPeca(direcao, index);
+                cells[valorI][valorJ].remove(label);
+                cells[jogador1.getPeca(index).getLocalizacao()
+                        .getLinha()][jogador1.getPeca(index)
+                                .getLocalizacao()
+                                .getColuna()]
+                        .add(label);
+                removerTodosBotoes();
+                tabuleiro.revalidate();
+                tabuleiro.repaint();
+                estado.salvarLocalizacaoTok(pecaTok);
+                estado.incrementarRodada();
+            } else {
+                JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    /**
+     * Move uma peça do jogador 2 no tabuleiro de acordo com as regras do jogo.
+     *
+     * @param valorI  A linha atual da peça a ser movida.
+     * @param valorJ  A coluna atual da peça a ser movida.
+     * @param index   O índice da peça a ser movida dentro da lista de peças do
+     *                jogador 2.
+     * @param label   O rótulo (JLabel) associado à peça a ser movida.
+     * @param direcao A direção para a qual a peça será movida.
+     */
+    private void actionPecaJogador2(final int valorI, final int valorJ, int index, JLabel label, String direcao) {
+        if (estado.verificarVezJogador()) {
+            if (estado.verificarPrimeiraRodada()) {
+                dizerQualMovimentoPeca(direcao, index);
+                cells[valorI][valorJ].remove(label);
+                cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
+                        .getLocalizacao()
+                        .getColuna()].add(label);
+                removerTodosBotoes();
+                tabuleiro.revalidate();
+                tabuleiro.repaint();
+                estado.incrementarRodada();
+            } else {
+                if (estado.verificarTokMovido()) {
+                    dizerQualMovimentoPeca(direcao, index);
+                    cells[valorI][valorJ].remove(label);
+                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2
+                            .getPeca(index)
+                            .getLocalizacao()
+                            .getColuna()].add(label);
+                    removerTodosBotoes();
+                    tabuleiro.revalidate();
+                    tabuleiro.repaint();
+                    estado.salvarLocalizacaoTok(pecaTok);
+                    estado.incrementarRodada();
+                } else {
+                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    /**
+     * Move a peça TOK no tabuleiro de acordo com as regras do jogo.
+     *
+     * @param valorI  A linha atual da peça TOK.
+     * @param valorJ  A coluna atual da peça TOK.
+     * @param label   O rótulo (JLabel) associado à peça TOK a ser movida.
+     * @param direcao A direção para a qual a peça TOK será movida.
+     */
+    private void actionPecaTok(final int valorI, final int valorJ, JLabel label, String direcao) {
+        if (!estado.verificarPrimeiraRodada()) {
+            if (!estado.verificarVezJogador()) {
+                if (estado.verificarRodada()) {
+                    estado.salvarLocalizacaoTok(pecaTok);
+                    dizerQualMovimentoTok(direcao);
+                    cells[valorI][valorJ].remove(label);
+                    cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
+                            .getLocalizacao()
+                            .getColuna()].add(label);
+                    removerTodosBotoes();
+                    estado.salvarRodada();
+                    tabuleiro.revalidate();
+                    tabuleiro.repaint();
+                    alertarFinalDeJogo();
+                } else {
+                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                            "Informação",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if (estado.verificarRodada()) {
+                    estado.salvarLocalizacaoTok(pecaTok);
+                    dizerQualMovimentoTok(direcao);
+                    cells[valorI][valorJ].remove(label);
+                    cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
+                            .getLocalizacao()
+                            .getColuna()].add(label);
+                    removerTodosBotoes();
+                    estado.salvarRodada();
+                    tabuleiro.revalidate();
+                    tabuleiro.repaint();
+                    alertarFinalDeJogo();
+                } else {
+                    JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
+                            "Informação",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
+                    "Informação",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    /**
+     * Move a peça do Jogador 1 no tabuleiro em resposta a eventos de clique do
+     * mouse.
+     *
+     * @param label O rótulo (JLabel) associado à peça do Jogador 1 a ser movida.
+     * @param evt   O evento de clique do mouse que acionou a movimentação da peça.
+     */
+    private void movimentarPecaJogador1(JLabel label, java.awt.event.MouseEvent evt) {
         if (!alertarJogoFinalizado()) {
+
             LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
                     .verificarAdjacentesLivres(verificarQualJpanel(label, evt));
             Localizacao localizacaoAtual = (Localizacao) verificarQualJpanel(label, evt);
+
+            final int valorI = localizacaoAtual.getLinha();
+            final int valorJ = localizacaoAtual.getColuna();
 
             int index = (int) Integer.parseInt(label.getName());
 
             for (Localizacao adjacente : adjacentesLivres) {
                 int linhaAdjacente = adjacente.getLinha();
                 int colunaAdjacente = adjacente.getColuna();
+
                 JButton novoBotao = new JButton("Novo Botão");
                 novoBotao.setText(null);
                 novoBotao.setPreferredSize(new Dimension(50, 50));
@@ -273,158 +463,46 @@ public class JogoTokGui extends javax.swing.JFrame {
                 novoBotao.setBorderPainted(false);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
-
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
                     novoBotao.addActionListener(new ActionListener() {
-
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarVezJogador()) {
-                                if (estado.verificarTokMovido()) {
-                                    jogador1.getPeca(index).moverParaBaixo();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador1.getPeca(index).getLocalizacao()
-                                            .getLinha()][jogador1.getPeca(index)
-                                                    .getLocalizacao()
-                                                    .getColuna()]
-                                            .add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.salvarLocalizacaoTok(pecaTok);
-                                    estado.incrementarRodada();
-                                } else {
-                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                            JOptionPane.ERROR_MESSAGE);
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador1(valorI, valorJ, index, label, "Baixo");
                         }
-
                     });
                 }
-
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
                     novoBotao.addActionListener(new ActionListener() {
-
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarVezJogador()) {
-                                if (estado.verificarTokMovido()) {
-                                    jogador1.getPeca(index).moverParaDireita();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador1.getPeca(index).getLocalizacao()
-                                            .getLinha()][jogador1.getPeca(index)
-                                                    .getLocalizacao()
-                                                    .getColuna()]
-                                            .add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.salvarLocalizacaoTok(pecaTok);
-                                    estado.incrementarRodada();
-                                } else {
-                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                            JOptionPane.ERROR_MESSAGE);
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador1(valorI, valorJ, index, label, "Direita");
                         }
                     });
                 }
-
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
-
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarVezJogador()) {
-                                if (estado.verificarTokMovido()) {
-                                    jogador1.getPeca(index).moverParaCima();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador1.getPeca(index).getLocalizacao()
-                                            .getLinha()][jogador1.getPeca(index)
-                                                    .getLocalizacao()
-                                                    .getColuna()]
-                                            .add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.salvarLocalizacaoTok(pecaTok);
-                                    estado.incrementarRodada();
-                                } else {
-                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                            JOptionPane.ERROR_MESSAGE);
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador1(valorI, valorJ, index, label, "Cima");
                         }
                     });
                 }
-
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarVezJogador()) {
-                                if (estado.verificarTokMovido()) {
-                                    jogador1.getPeca(index).moverParaEsquerda();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador1.getPeca(index).getLocalizacao()
-                                            .getLinha()][jogador1.getPeca(index)
-                                                    .getLocalizacao()
-                                                    .getColuna()]
-                                            .add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.salvarLocalizacaoTok(pecaTok);
-                                    estado.incrementarRodada();
-                                } else {
-                                    JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                            JOptionPane.ERROR_MESSAGE);
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador1(valorI, valorJ, index, label, "Esquerda");
                         }
                     });
                 }
@@ -435,23 +513,21 @@ public class JogoTokGui extends javax.swing.JFrame {
     }
 
     /**
-     * Movimenta as peças do Jogador 2 com base no JPanel correspondente ao JLabel.
+     * Move a peça do Jogador 2 no tabuleiro em resposta a eventos de clique do
+     * mouse.
      *
-     * Este método permite ao Jogador 2 mover suas peças na direção desejada, com
-     * base na posição do JLabel no JPanel. Verifica se o jogo já foi finalizado, se
-     * é a primeira rodada, se o Tok foi movido, e se é a vez do Jogador 2 jogar
-     * antes de realizar o movimento. Exibe alertas apropriados e atualiza a
-     * interface gráfica conforme necessário.
-     *
-     * @param label O JLabel correspondente à peça do Jogador 2 a ser movimentada.
-     * @param evt   O evento do mouse associado ao movimento.
+     * @param label O rótulo (JLabel) associado à peça do Jogador 1 a ser movida.
+     * @param evt   O evento de clique do mouse que acionou a movimentação da peça.
      */
-    private void movimentarPecasJogador2(JLabel label, java.awt.event.MouseEvent evt) {
+    private void movimentarPecaJogador2(JLabel label, java.awt.event.MouseEvent evt) {
         if (!alertarJogoFinalizado()) {
 
             LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
                     .verificarAdjacentesLivres(verificarQualJpanel(label, evt));
             Localizacao localizacaoAtual = (Localizacao) verificarQualJpanel(label, evt);
+
+            final int valorI = localizacaoAtual.getLinha();
+            final int valorJ = localizacaoAtual.getColuna();
 
             int index = (int) Integer.parseInt(label.getName());
 
@@ -467,200 +543,46 @@ public class JogoTokGui extends javax.swing.JFrame {
                 novoBotao.setBorderPainted(false);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (estado.verificarVezJogador()) {
-                                if (estado.verificarPrimeiraRodada()) {
-                                    jogador2.getPeca(index).moverParaBaixo();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
-                                            .getLocalizacao()
-                                            .getColuna()].add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.incrementarRodada();
-                                } else {
-                                    if (estado.verificarTokMovido()) {
-                                        jogador2.getPeca(index).moverParaBaixo();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2
-                                                .getPeca(index)
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        estado.incrementarRodada();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador2(valorI, valorJ, index, label, "Baixo");
                         }
                     });
                 }
-
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
                     novoBotao.addActionListener(new ActionListener() {
-
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (estado.verificarVezJogador()) {
-                                if (estado.verificarPrimeiraRodada()) {
-                                    jogador2.getPeca(index).moverParaDireita();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
-                                            .getLocalizacao()
-                                            .getColuna()].add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.incrementarRodada();
-                                } else {
-                                    if (estado.verificarTokMovido()) {
-                                        jogador2.getPeca(index).moverParaDireita();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2
-                                                .getPeca(index)
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        estado.incrementarRodada();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador2(valorI, valorJ, index, label, "Direita");
                         }
                     });
                 }
-
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-
-                            if (estado.verificarVezJogador()) {
-                                if (estado.verificarPrimeiraRodada()) {
-                                    jogador2.getPeca(index).moverParaCima();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
-                                            .getLocalizacao()
-                                            .getColuna()].add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.incrementarRodada();
-                                } else {
-                                    if (estado.verificarTokMovido()) {
-                                        jogador2.getPeca(index).moverParaCima();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2
-                                                .getPeca(index)
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        estado.incrementarRodada();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador2(valorI, valorJ, index, label, "Cima");
                         }
                     });
                 }
-
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
                     novoBotao.addActionListener(new ActionListener() {
-
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (estado.verificarVezJogador()) {
-                                if (estado.verificarPrimeiraRodada()) {
-                                    jogador2.getPeca(index).moverParaEsquerda();
-                                    cells[valorI][valorJ].remove(label);
-                                    cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2.getPeca(index)
-                                            .getLocalizacao()
-                                            .getColuna()].add(label);
-                                    removerTodosBotoes();
-                                    tabuleiro.revalidate();
-                                    tabuleiro.repaint();
-                                    estado.incrementarRodada();
-                                } else {
-                                    if (estado.verificarTokMovido()) {
-                                        jogador2.getPeca(index).moverParaEsquerda();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getPeca(index).getLocalizacao().getLinha()][jogador2
-                                                .getPeca(index)
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        estado.incrementarRodada();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "Mova o Tok Primeiramente", "Alerta",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Não é sua vez de Jogar", "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaJogador2(valorI, valorJ, index, label, "Esquerda");
                         }
                     });
                 }
@@ -671,22 +593,21 @@ public class JogoTokGui extends javax.swing.JFrame {
     }
 
     /**
-     * Movimenta a peça Tok com base no JPanel correspondente ao JLabel.
+     * Move a peça TOK no tabuleiro em resposta a eventos de clique do
+     * mouse.
      *
-     * Este método é responsável por movimentar a peça Tok do jogador ativo na
-     * direção desejada com base na posição do JLabel no JPanel. Verifica se o jogo
-     * já foi finalizado, se o Tok está preso e se é a primeira rodada antes de
-     * realizar o movimento. Exibe alertas apropriados e atualiza a interface
-     * gráfica conforme necessário.
-     *
-     * @param label O JLabel correspondente à peça Tok a ser movimentada.
-     * @param evt   O evento do mouse associado ao movimento.
+     * @param label O rótulo (JLabel) associado à peça do Jogador 1 a ser movida.
+     * @param evt   O evento de clique do mouse que acionou a movimentação da peça.
      */
     private void movimentarPecaTOk(JLabel label, java.awt.event.MouseEvent evt) {
         if (!alertarJogoFinalizado()) {
+
             LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
                     .verificarAdjacentesLivres(verificarQualJpanel(label, evt));
             Localizacao localizacaoAtual = (Localizacao) verificarQualJpanel(label, evt);
+
+            final int valorI = localizacaoAtual.getLinha();
+            final int valorJ = localizacaoAtual.getColuna();
 
             alertaTokPreso(adjacentesLivres);
 
@@ -702,232 +623,46 @@ public class JogoTokGui extends javax.swing.JFrame {
                 novoBotao.setBorderPainted(false);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarPrimeiraRodada()) {
-                                if (!estado.verificarVezJogador()) {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador1.getTok().moverParaBaixo();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        alertarFinalDeJogo();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } else {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador2.getTok().moverParaBaixo();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        alertarFinalDeJogo();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
-                                        "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaTok(valorI, valorJ, label, "Baixo");
                         }
                     });
                 }
-
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarPrimeiraRodada()) {
-                                if (!estado.verificarVezJogador()) {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador1.getTok().moverParaDireita();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } else {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador2.getTok().moverParaDireita();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
-                                        "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaTok(valorI, valorJ, label, "Direita");
                         }
                     });
                 }
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarPrimeiraRodada()) {
-                                if (!estado.verificarVezJogador()) {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador1.getTok().moverParaCima();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        alertarFinalDeJogo();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } else {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador2.getTok().moverParaCima();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                        alertarFinalDeJogo();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
-                                        "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaTok(valorI, valorJ, label, "Cima");
                         }
                     });
                 }
-
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-
                     cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
-
-                    novoBotao.setIcon(
-                            new javax.swing.ImageIcon(
-                                    getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
-                    final int valorI = localizacaoAtual.getLinha();
-                    final int valorJ = localizacaoAtual.getColuna();
+                    novoBotao.setIcon(new javax.swing.ImageIcon(
+                            getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
-                            if (!estado.verificarPrimeiraRodada()) {
-                                if (!estado.verificarVezJogador()) {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador1.getTok().moverParaEsquerda();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador1.getTok().getLocalizacao().getLinha()][jogador1.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } else {
-                                    if (estado.verificarRodada()) {
-                                        estado.salvarLocalizacaoTok(pecaTok);
-                                        jogador2.getTok().moverParaEsquerda();
-                                        cells[valorI][valorJ].remove(label);
-                                        cells[jogador2.getTok().getLocalizacao().getLinha()][jogador2.getTok()
-                                                .getLocalizacao()
-                                                .getColuna()].add(label);
-                                        removerTodosBotoes();
-                                        estado.salvarRodada();
-                                        tabuleiro.revalidate();
-                                        tabuleiro.repaint();
-                                    } else {
-                                        JOptionPane.showMessageDialog(tabuleiro, "TOK já foi movido nesta rodada",
-                                                "Informação",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(tabuleiro, "Na primeira rodada o TOK não é movido",
-                                        "Informação",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            actionPecaTok(valorI, valorJ, label, "Esquerda");
                         }
                     });
                 }
@@ -1620,27 +1355,27 @@ public class JogoTokGui extends javax.swing.JFrame {
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel1MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador1(jLabel1, evt);
+        movimentarPecaJogador1(jLabel1, evt);
     }// GEN-LAST:event_jLabel1MouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel2MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador1(jLabel2, evt);
+        movimentarPecaJogador1(jLabel2, evt);
     }// GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel3MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador1(jLabel3, evt);
+        movimentarPecaJogador1(jLabel3, evt);
     }// GEN-LAST:event_jLabel3MouseClicked
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel4MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador1(jLabel4, evt);
+        movimentarPecaJogador1(jLabel4, evt);
     }// GEN-LAST:event_jLabel4MouseClicked
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel5MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador1(jLabel5, evt);
+        movimentarPecaJogador1(jLabel5, evt);
     }// GEN-LAST:event_jLabel5MouseClicked
 
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel6MouseClicked
@@ -1650,27 +1385,27 @@ public class JogoTokGui extends javax.swing.JFrame {
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel7MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador2(jLabel7, evt);
+        movimentarPecaJogador2(jLabel7, evt);
     }// GEN-LAST:event_jLabel7MouseClicked
 
     private void jLabel8MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel8MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador2(jLabel8, evt);
+        movimentarPecaJogador2(jLabel8, evt);
     }// GEN-LAST:event_jLabel8MouseClicked
 
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel9MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador2(jLabel9, evt);
+        movimentarPecaJogador2(jLabel9, evt);
     }// GEN-LAST:event_jLabel9MouseClicked
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel10MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador2(jLabel10, evt);
+        movimentarPecaJogador2(jLabel10, evt);
     }// GEN-LAST:event_jLabel10MouseClicked
 
     private void jLabel11MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel11MouseClicked
         removerTodosBotoes();
-        movimentarPecasJogador2(jLabel11, evt);
+        movimentarPecaJogador2(jLabel11, evt);
     }// GEN-LAST:event_jLabel11MouseClicked
 
     /**
