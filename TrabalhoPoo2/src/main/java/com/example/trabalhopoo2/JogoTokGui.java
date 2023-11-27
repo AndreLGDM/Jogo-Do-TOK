@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -23,8 +24,8 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author André
- * @author Gabriel
+ * @author André Medeiros
+ * @author Gabriel Amorim
  */
 public class JogoTokGui extends javax.swing.JFrame {
 
@@ -39,10 +40,23 @@ public class JogoTokGui extends javax.swing.JFrame {
      * Creates new form JogoTokGui
      */
     public JogoTokGui() {
+        setIconImage(new ImageIcon(getClass().getResource("/com/example/trabalhopoo2/Tabuleiro.png")).getImage());
         initComponents();
         transformarPanelEmMatriz();
     }
 
+    /**
+     * Transforma um conjunto de JPanels em uma matriz e adiciona-os ao tabuleiro.
+     *
+     * Este método é responsável por criar uma matriz bidimensional de JPanels com
+     * base
+     * em um conjunto predefinido de JPanels e adicioná-los ao tabuleiro do jogo. A
+     * matriz
+     * 'cells' é atualizada para refletir essa transformação.
+     *
+     * @see Tabuleiro#getAltura()
+     * @see Tabuleiro#getLargura()
+     */
     private void transformarPanelEmMatriz() {
         cells = new JPanel[tabuleiroObject.getAltura()][tabuleiroObject.getLargura()];
         JPanel[][] jPanelArray = {
@@ -55,12 +69,20 @@ public class JogoTokGui extends javax.swing.JFrame {
         for (int i = 0; i < tabuleiroObject.getAltura(); i++) {
             for (int j = 0; j < tabuleiroObject.getLargura(); j++) {
                 cells[i][j] = jPanelArray[i][j];
-                cells[i][j].setLayout(new FlowLayout(FlowLayout.CENTER, 21, 21));
+                cells[i][j].setLayout(new FlowLayout(FlowLayout.CENTER, 25, 25));
                 tabuleiro.add(cells[i][j]);
             }
         }
     }
 
+    /**
+     * Remove todos os botões presentes em cada célula do tabuleiro.
+     *
+     * Este método itera sobre a matriz de células do tabuleiro, chamando o método
+     * {@code removerBotao} para remover todos os botões contidos em cada célula.
+     * 
+     * @see #removerBotao(Container)
+     */
     private void removerTodosBotoes() {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
@@ -69,6 +91,16 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Remove todos os botões contidos no Container fornecido.
+     *
+     * Este método percorre todos os componentes dentro do Container fornecido e
+     * remove
+     * aqueles que são instâncias de JButton, removendo assim todos os botões
+     * presentes.
+     *
+     * @param container O Container do qual os botões serão removidos.
+     */
     private void removerBotao(Container container) {
         for (Component component : container.getComponents()) {
             if (component instanceof JButton) {
@@ -77,13 +109,24 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Determina a Localizacao associada ao JPanel correspondente ao JLabel clicado.
+     *
+     * Este método é usado para identificar a posição no tabuleiro (Localizacao)
+     * associada
+     * ao JLabel clicado durante um evento de clique do mouse.
+     *
+     * @param label O JLabel clicado que desencadeou o evento de clique do mouse.
+     * @param evt   O evento de clique do mouse associado.
+     * @return A Localizacao correspondente ao JPanel associado ao JLabel clicado.
+     *         Retorna null se a correspondência não for encontrada.
+     */
     private Localizacao verificarQualJpanel(JLabel label, java.awt.event.MouseEvent evt) {
         label = (JLabel) evt.getSource();
 
         int coordenadaI = -1;
         int coordenadaJ = -1;
 
-        // Procurar as coordenadas [i][j] do JPanel no array cells
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 if (cells[i][j].isAncestorOf(label)) {
@@ -96,6 +139,17 @@ public class JogoTokGui extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Cria e retorna um JPanel contendo uma imagem e os nomes dos autores do
+     * projeto.
+     *
+     * Este método cria um JPanel verticalmente alinhado (BoxLayout.Y_AXIS) que
+     * inclui
+     * uma imagem dos autores e um JLabel com os nomes "André Medeiros" e "Gabriel
+     * Amorim".
+     *
+     * @return Um JPanel contendo a imagem dos autores e seus nomes.
+     */
     public JPanel imagemAutores() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -109,10 +163,20 @@ public class JogoTokGui extends javax.swing.JFrame {
 
         JLabel texto = new JLabel("André Medeiros e Gabriel Amorim");
         texto.setAlignmentX(Component.CENTER_ALIGNMENT);
+        texto.setFont(new Font("Jokerman", Font.ITALIC, 30));
         panel.add(texto);
         return panel;
     }
 
+    /**
+     * Exibe um alerta de final de jogo com base na localização atual da peça Tok.
+     *
+     * Este método verifica a localização da peça Tok e exibe uma mensagem de fim de
+     * jogo
+     * informando qual jogador venceu, dependendo se a peça está na primeira ou
+     * última linha
+     * do tabuleiro.
+     */
     private void alertarFinalDeJogo() {
         if (pecaTok.getLocalizacao().getLinha() == 0) {
             JOptionPane.showMessageDialog(tabuleiro,
@@ -127,6 +191,16 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Verifica se o jogo já foi finalizado com base na localização da peça Tok.
+     *
+     * Este método verifica se a peça Tok está na primeira ou última linha do
+     * tabuleiro. Se a condição for atendida, exibe um alerta informando que o jogo
+     * foi finalizado e qual jogador venceu, retornando true. Caso contrário,
+     * retorna false indicando que o jogo ainda não foi finalizado.
+     *
+     * @return true se o jogo foi finalizado, false caso contrário.
+     */
     private boolean alertarJogoFinalizado() {
         if (pecaTok.getLocalizacao().getLinha() == 0) {
             JOptionPane.showMessageDialog(tabuleiro,
@@ -144,6 +218,17 @@ public class JogoTokGui extends javax.swing.JFrame {
         return false;
     }
 
+    /**
+     * Exibe um alerta indicando que o Tok está preso.
+     *
+     * Este método verifica se a lista de posições adjacentes livres está vazia e se
+     * é a vez do Jogador 1 ou do Jogador 2. Se a lista estiver vazia e for a vez do
+     * Jogador 1, exibe um alerta indicando que o Tok está preso e que o Jogador 2
+     * venceu o jogo. Se a lista estiver vazia e for a vez do Jogador 2, exibe um
+     * alerta indicando que o Tok está preso e que o Jogador 1 venceu o jogo.
+     *
+     * @param adjacentesLivres Lista de posições adjacentes livres ao redor do Tok.
+     */
     private void alertaTokPreso(LinkedList adjacentesLivres) {
         if (adjacentesLivres.size() <= 0 && estado.verificarVezJogador()) {
             JOptionPane.showMessageDialog(tabuleiro, "TOK PRESO, JOGADOR 1 VENCEU O JOGO!!", "FIM DE JOGO",
@@ -158,6 +243,18 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Movimenta as peças do Jogador 1 com base no JPanel correspondente ao JLabel.
+     *
+     * Este método permite ao Jogador 1 mover suas peças na direção desejada, com
+     * base na posição do JLabel no JPanel. Verifica se o jogo já foi finalizado, se
+     * o Tok foi movido, e se é a vez do Jogador 1 jogar antes de realizar o
+     * movimento. Exibe alertas apropriados e atualiza a interface gráfica conforme
+     * necessário.
+     *
+     * @param label O JLabel correspondente à peça do Jogador 1 a ser movimentada.
+     * @param evt   O evento do mouse associado ao movimento.
+     */
     private void movimentarPecasJogador1(JLabel label, java.awt.event.MouseEvent evt) {
         if (!alertarJogoFinalizado()) {
             LinkedList<Localizacao> adjacentesLivres = tabuleiroObject
@@ -360,6 +457,18 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Movimenta as peças do Jogador 2 com base no JPanel correspondente ao JLabel.
+     *
+     * Este método permite ao Jogador 2 mover suas peças na direção desejada, com
+     * base na posição do JLabel no JPanel. Verifica se o jogo já foi finalizado, se
+     * é a primeira rodada, se o Tok foi movido, e se é a vez do Jogador 2 jogar
+     * antes de realizar o movimento. Exibe alertas apropriados e atualiza a
+     * interface gráfica conforme necessário.
+     *
+     * @param label O JLabel correspondente à peça do Jogador 2 a ser movimentada.
+     * @param evt   O evento do mouse associado ao movimento.
+     */
     private void movimentarPecasJogador2(JLabel label, java.awt.event.MouseEvent evt) {
         if (!alertarJogoFinalizado()) {
 
@@ -605,6 +714,18 @@ public class JogoTokGui extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Movimenta a peça Tok com base no JPanel correspondente ao JLabel.
+     *
+     * Este método é responsável por movimentar a peça Tok do jogador ativo na
+     * direção desejada com base na posição do JLabel no JPanel. Verifica se o jogo
+     * já foi finalizado, se o Tok está preso e se é a primeira rodada antes de
+     * realizar o movimento. Exibe alertas apropriados e atualiza a interface
+     * gráfica conforme necessário.
+     *
+     * @param label O JLabel correspondente à peça Tok a ser movimentada.
+     * @param evt   O evento do mouse associado ao movimento.
+     */
     private void movimentarPecaTOk(JLabel label, java.awt.event.MouseEvent evt) {
         if (!alertarJogoFinalizado()) {
             LinkedList<Localizacao> adjacentesLivres = tabuleiroObject

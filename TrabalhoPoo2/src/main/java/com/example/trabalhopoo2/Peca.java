@@ -13,21 +13,12 @@ import javax.swing.JLabel;
  */
 public class Peca extends JLabel {
 
-    private String nome;
     private Tabuleiro tabuleiro;
     private Localizacao localizacao;
 
     public Peca(Tabuleiro tabuleiro, Localizacao localizacao) {
         this.tabuleiro = tabuleiro;
         setLocalizacao(localizacao);
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public Localizacao getLocalizacao() {

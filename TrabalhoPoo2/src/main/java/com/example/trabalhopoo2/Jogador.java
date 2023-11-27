@@ -25,12 +25,10 @@ public class Jogador {
         if (nome.equals("Jogador1")) {
             for (int i = 0; i < 5; i++) {
                 pecas[i] = new Peca(tabuleiro, new Localizacao(0, i));
-                pecas[i].setNome("1");
             }
         } else if (nome.equals("Jogador2")) {
             for (int i = 0; i < 5; i++) {
                 pecas[i] = new Peca(tabuleiro, new Localizacao(4, i));
-                pecas[i].setNome("2");
             }
         }
     }
