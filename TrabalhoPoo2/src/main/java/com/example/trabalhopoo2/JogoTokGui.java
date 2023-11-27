@@ -48,10 +48,8 @@ public class JogoTokGui extends javax.swing.JFrame {
      * Transforma um conjunto de JPanels em uma matriz e adiciona-os ao tabuleiro.
      *
      * Este método é responsável por criar uma matriz bidimensional de JPanels com
-     * base
-     * em um conjunto predefinido de JPanels e adicioná-los ao tabuleiro do jogo. A
-     * matriz
-     * 'cells' é atualizada para refletir essa transformação.
+     * base em um conjunto predefinido de JPanels e adicioná-los ao tabuleiro do
+     * jogo. A matriz 'cells' é atualizada para refletir essa transformação.
      *
      * @see Tabuleiro#getAltura()
      * @see Tabuleiro#getLargura()
@@ -94,8 +92,7 @@ public class JogoTokGui extends javax.swing.JFrame {
      * Remove todos os botões contidos no Container fornecido.
      *
      * Este método percorre todos os componentes dentro do Container fornecido e
-     * remove
-     * aqueles que são instâncias de JButton, removendo assim todos os botões
+     * remove aqueles que são instâncias de JButton, removendo assim todos os botões
      * presentes.
      *
      * @param container O Container do qual os botões serão removidos.
@@ -112,8 +109,7 @@ public class JogoTokGui extends javax.swing.JFrame {
      * Determina a Localizacao associada ao JPanel correspondente ao JLabel clicado.
      *
      * Este método é usado para identificar a posição no tabuleiro (Localizacao)
-     * associada
-     * ao JLabel clicado durante um evento de clique do mouse.
+     * associada ao JLabel clicado durante um evento de clique do mouse.
      *
      * @param label O JLabel clicado que desencadeou o evento de clique do mouse.
      * @param evt   O evento de clique do mouse associado.
@@ -143,9 +139,8 @@ public class JogoTokGui extends javax.swing.JFrame {
      * projeto.
      *
      * Este método cria um JPanel verticalmente alinhado (BoxLayout.Y_AXIS) que
-     * inclui
-     * uma imagem dos autores e um JLabel com os nomes "André Medeiros" e "Gabriel
-     * Amorim".
+     * incluiuma imagem dos autores e um JLabel com os nomes "André Medeiros"
+     * e "Gabriel Amorim".
      *
      * @return Um JPanel contendo a imagem dos autores e seus nomes.
      */
@@ -171,10 +166,8 @@ public class JogoTokGui extends javax.swing.JFrame {
      * Exibe um alerta de final de jogo com base na localização atual da peça Tok.
      *
      * Este método verifica a localização da peça Tok e exibe uma mensagem de fim de
-     * jogo
-     * informando qual jogador venceu, dependendo se a peça está na primeira ou
-     * última linha
-     * do tabuleiro.
+     * jogo informando qual jogador venceu, dependendo se a peça está na primeira ou
+     * última linhado tabuleiro.
      */
     private void alertarFinalDeJogo() {
         if (pecaTok.getLocalizacao().getLinha() == 0) {
@@ -433,6 +426,20 @@ public class JogoTokGui extends javax.swing.JFrame {
     }
 
     /**
+     * Configura as características visuais de um botão, tornando-o transparente e
+     * sem borda.
+     *
+     * @param botao O botão ao qual as características visuais serão aplicadas.
+     */
+    public void caracteristicasBotao(JButton botao) {
+        botao.setText(null);
+        botao.setPreferredSize(new Dimension(50, 50));
+        botao.setOpaque(false);
+        botao.setContentAreaFilled(false);
+        botao.setBorderPainted(false);
+    }
+
+    /**
      * Move a peça do Jogador 1 no tabuleiro em resposta a eventos de clique do
      * mouse.
      *
@@ -456,16 +463,13 @@ public class JogoTokGui extends javax.swing.JFrame {
                 int colunaAdjacente = adjacente.getColuna();
 
                 JButton novoBotao = new JButton("Novo Botão");
-                novoBotao.setText(null);
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
+                caracteristicasBotao(novoBotao);
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
+
                     novoBotao.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
@@ -474,7 +478,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -485,7 +488,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -496,7 +498,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -536,14 +537,10 @@ public class JogoTokGui extends javax.swing.JFrame {
                 int colunaAdjacente = adjacente.getColuna();
 
                 JButton novoBotao = new JButton("Novo Botão");
-                novoBotao.setText(null);
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
+                caracteristicasBotao(novoBotao);
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -554,7 +551,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -565,7 +561,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -576,7 +571,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -616,14 +610,10 @@ public class JogoTokGui extends javax.swing.JFrame {
                 int colunaAdjacente = adjacente.getColuna();
 
                 JButton novoBotao = new JButton("Novo Botão");
-                novoBotao.setText(null);
-                novoBotao.setPreferredSize(new Dimension(50, 50));
-                novoBotao.setOpaque(false);
-                novoBotao.setContentAreaFilled(false);
-                novoBotao.setBorderPainted(false);
+                caracteristicasBotao(novoBotao);
+                cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
 
                 if (linhaAdjacente > localizacaoAtual.getLinha()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaBaixo.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -634,7 +624,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (colunaAdjacente > localizacaoAtual.getColuna()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaDireita.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -645,7 +634,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (linhaAdjacente < localizacaoAtual.getLinha()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaCima.png")));
                     novoBotao.addActionListener(new ActionListener() {
@@ -656,7 +644,6 @@ public class JogoTokGui extends javax.swing.JFrame {
                     });
                 }
                 if (colunaAdjacente < localizacaoAtual.getColuna()) {
-                    cells[linhaAdjacente][colunaAdjacente].add(novoBotao);
                     novoBotao.setIcon(new javax.swing.ImageIcon(
                             getClass().getResource("/com/example/trabalhopoo2/SetaEsquerda.png")));
                     novoBotao.addActionListener(new ActionListener() {

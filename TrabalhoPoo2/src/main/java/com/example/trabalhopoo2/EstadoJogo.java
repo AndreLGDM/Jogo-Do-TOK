@@ -28,7 +28,7 @@ public class EstadoJogo {
     }
 
     /**
-     * * Salva a instância atual da rodada.
+     * Salva a instância atual da rodada.
      * 
      * Este método copia a referência da rodada atual para a variável, permitindo a
      * posterior recuperação do estado da rodada.
